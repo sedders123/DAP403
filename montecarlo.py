@@ -41,7 +41,7 @@ def save_graph(result, percentages):
     plt.xlabel('Percentage')
     plt.ylabel('Time')
     plt.gca().invert_yaxis()
-    plt.savefig('myfig.png')
+    plt.savefig('chart.png')
 
 
 def create_table(result, percentages):
