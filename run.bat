@@ -3,9 +3,11 @@
 :setup
 
 echo -----------------------------------
-echo Checking required modules installed:
+echo Creating temporary drive
+pushd %~dp0
+echo Checking required modules installed (this may take a few minutes):
 echo.
-pip install -r requirements.txt
+pip install -r requirements.txt --user
 echo.
 
 :run_simulation
@@ -17,7 +19,7 @@ echo.
 
 :end
 echo -----------------------------------
-
-echo A graph has been saved to chart.png
+echo Removing temporary drive
+popd
 echo Press any key to exit
 pause > nul
