@@ -4,8 +4,9 @@ machine:
 
 dependencies:
   post:
-    - pip install flake8
+    - pip install -r requiremnets.txt
 
 test:
   override:
     - flake8 src --ignore=E128,E501
+    - nosetests tests/
