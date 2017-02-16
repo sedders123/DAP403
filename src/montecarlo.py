@@ -1,9 +1,15 @@
 import random
 import json
+import os
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 
 SIMULATION_RUN_COUNT = 500
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SOURCE_DIR = os.path.join(BASE_DIR, 'src')
+DATA_DIR = os.path.join(SOURCE_DIR, 'data')
+OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 
 def load_json_file(file_path):
     '''
@@ -56,7 +62,7 @@ def save_graph(result):
     plt.xlabel('Percentage')
     plt.ylabel('Time')
     plt.gca().invert_yaxis()
-    plt.savefig('chart.png')
+    plt.savefig(os.path.join(OUTPUT_DIR, 'chart.png'))
 
 
 def create_table(result):
@@ -69,7 +75,7 @@ def create_table(result):
         table.add_column("Time", list(result.keys()))
         table.add_column("Number of times (Out of {})".format(SIMULATION_RUN_COUNT), [sim_result["number"] for sim_result in result.values()])
         table.add_column("Percent of total (rounded)", [sim_result["percentage"] for sim_result in result.values()])
-        with open('table.txt', 'w') as f:
+        with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
             print(table, file=f)
         return table
     except ImportError:
@@ -77,7 +83,7 @@ def create_table(result):
 
 
 if __name__ == '__main__':
-    tasks_file = 'data.json'
+    tasks_file = os.path.join(DATA_DIR, 'tasks.json')
     tasks = load_json_file(tasks_file)
     minimum, maximum = get_totals(tasks)
     result = run_simulation(minimum, maximum)

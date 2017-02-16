@@ -12,7 +12,7 @@ echo.
 echo -----------------------------------
 echo Running simulation
 echo.
-python montecarlo.py
+python src\montecarlo.py
 echo.
 
 :end
