@@ -11,6 +11,7 @@ SOURCE_DIR = os.path.join(BASE_DIR, 'src')
 DATA_DIR = os.path.join(SOURCE_DIR, 'data')
 OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 
+
 def load_json_file(file_path):
     '''
     Returns data from a specified JSON file
@@ -18,6 +19,7 @@ def load_json_file(file_path):
     with open(file_path) as data_file:
         tasks = json.load(data_file)
     return tasks
+
 
 def get_totals(tasks):
     '''
@@ -35,7 +37,6 @@ def run_simulation(minimum, maximum):
     '''
     Runs the simulation and returns the result
     '''
-    results = []
     sim_result = OrderedDict()
 
     for time in range(minimum, maximum + 1):
@@ -43,7 +44,7 @@ def run_simulation(minimum, maximum):
 
     for i in range(SIMULATION_RUN_COUNT):
         value = random.randint(minimum, maximum)
-        for key in range(value, maximum +1):
+        for key in range(value, maximum + 1):
             sim_result[key]["number"] += 1
 
     for result in sim_result.values():
