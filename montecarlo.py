@@ -5,12 +5,18 @@ from collections import OrderedDict
 
 SIMULATION_RUN_COUNT = 500
 
-def load_tasks():
-    with open('data.json') as data_file:
+def load_json_file(file_path):
+    '''
+    Returns data from a specified JSON file
+    '''
+    with open(file_path) as data_file:
         tasks = json.load(data_file)
     return tasks
 
 def get_totals(tasks):
+    '''
+    Returns the sum of all the tasks minimum and maximum times
+    '''
     maximum = 0
     minimum = 0
     for task in tasks:
@@ -20,6 +26,9 @@ def get_totals(tasks):
 
 
 def run_simulation(minimum, maximum):
+    '''
+    Runs the simulation and returns the result
+    '''
     results = []
     sim_result = OrderedDict()
 
@@ -38,6 +47,9 @@ def run_simulation(minimum, maximum):
 
 
 def save_graph(result):
+    '''
+    Plots and then saves graph of results
+    '''
     fig, ax = plt.subplots()
     ax.barh(list(result.keys()), [sim_result["percentage"] for sim_result in result.values()], color='r')
 
@@ -48,6 +60,9 @@ def save_graph(result):
 
 
 def create_table(result):
+    '''
+    Saves a pretty printed table output of the results
+    '''
     try:
         from prettytable import PrettyTable
         table = PrettyTable()
@@ -62,7 +77,8 @@ def create_table(result):
 
 
 if __name__ == '__main__':
-    tasks = load_tasks()
+    tasks_file = 'data.json'
+    tasks = load_json_file(tasks_file)
     minimum, maximum = get_totals(tasks)
     result = run_simulation(minimum, maximum)
     save_graph(result)
