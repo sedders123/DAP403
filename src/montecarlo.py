@@ -1,7 +1,11 @@
 import random
 import json
 import os
+import math
 import matplotlib.pyplot as plt
+
+from prettytable import PrettyTable
+from matplotlib.patches import Rectangle
 from collections import OrderedDict
 
 SIMULATION_RUN_COUNT = 500
@@ -27,10 +31,12 @@ def get_totals(tasks):
     '''
     maximum = 0
     minimum = 0
+    estimate = 0
     for task in tasks:
         minimum += task["minimum"]
         maximum += task["maximum"]
-    return minimum, maximum
+        estimate += task["estimate"]
+    return minimum, maximum, estimate
 
 
 def run_simulation(minimum, maximum):
@@ -53,41 +59,67 @@ def run_simulation(minimum, maximum):
     return ordered_sim_result
 
 
-def save_graph(result):
+def save_graph(result, estimate):
     '''
     Plots and then saves graph of results
     '''
+    plt.style.use('classic')
     fig, ax = plt.subplots()
-    ax.barh(list(result.keys()), [sim_result["percentage"] for sim_result in result.values()], color='r')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.yaxis.set_ticks_position('left')
+    ax.xaxis.set_ticks_position('bottom')
 
+    # Set up legend
+    estimateKey = Rectangle((0, 0), 0.5, 0.5, color='y')
+    ax.legend([estimateKey], ["Estimate"])
+
+    x_values = list(result.keys())
+    y_values = [sim_result["percentage"] for sim_result in result.values()]
+    bars = ax.barh(x_values, y_values, color='r')
+    for bar in bars:
+        if math.floor(bar.get_y()) == estimate:
+            bar.set_color('y')
+    for i, value in enumerate(y_values):
+        ax.text(value + 3, x_values[i] + 0.5, "{}%".format(str(value)), color='blue', fontweight='bold')
+
+    # Hide major tick labels
+    ax.set_yticklabels('')
+
+    # Customize minor tick labels to place in center
+    ax.set_yticks([sim_result + 0.5 for sim_result in result], minor=True)
+    ax.set_yticklabels([sim_result for sim_result in result], minor=True)
+
+    plt.gca().invert_yaxis()
+    plt.title('Monte Carlo Simulation')
     plt.xlabel('Percentage')
     plt.ylabel('Time')
-    plt.gca().invert_yaxis()
+
     plt.savefig(os.path.join(OUTPUT_DIR, 'chart.png'))
 
 
-def create_table(result):
+def create_table(result, estimate):
     '''
     Saves a pretty printed table output of the results
     '''
-    try:
-        from prettytable import PrettyTable
-        table = PrettyTable()
-        table.add_column("Time", list(result.keys()))
-        table.add_column("Number of times (Out of {})".format(SIMULATION_RUN_COUNT), [sim_result["number"] for sim_result in result.values()])
-        table.add_column("Percent of total (rounded)", [sim_result["percentage"] for sim_result in result.values()])
-        with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
-            print(table, file=f)
-        return table
-    except ImportError:
-        print("No pretty table as module not installed.\n See table.txt for previuosly generated example")
+    table = PrettyTable()
+    is_estimate = []
+    for sim_result in result:
+        is_estimate.append("X") if sim_result == estimate else is_estimate.append("")
+    table.add_column("Time", list(result.keys()))
+    table.add_column("Number of times (Out of {})".format(SIMULATION_RUN_COUNT), [sim_result["number"] for sim_result in result.values()])
+    table.add_column("Percent of total (rounded)", [sim_result["percentage"] for sim_result in result.values()])
+    table.add_column("Estimate", is_estimate)
+    with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
+        print(table, file=f)
+    return table
 
 
 if __name__ == '__main__':
     tasks_file = os.path.join(DATA_DIR, 'tasks.json')
     tasks = load_json_file(tasks_file)
-    minimum, maximum = get_totals(tasks)
+    minimum, maximum, estimate = get_totals(tasks)
     result = run_simulation(minimum, maximum)
-    save_graph(result)
-    table = create_table(result)
+    save_graph(result, estimate)
+    table = create_table(result, estimate)
     print(table)
