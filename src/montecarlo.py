@@ -37,20 +37,20 @@ def run_simulation(minimum, maximum):
     '''
     Runs the simulation and returns the result
     '''
-    sim_result = OrderedDict()
-
-    for time in range(minimum, maximum + 1):
-        sim_result[time] = {"number": 0}
+    sim_result = {}
 
     for i in range(SIMULATION_RUN_COUNT):
         value = random.randint(minimum, maximum)
         for key in range(value, maximum + 1):
+            if key not in sim_result:
+                sim_result[key] = {"number": 0}
             sim_result[key]["number"] += 1
 
     for result in sim_result.values():
         result["percentage"] = int((result["number"] / SIMULATION_RUN_COUNT) * 100)
 
-    return sim_result
+    ordered_sim_result = OrderedDict(sorted(sim_result.items()))
+    return ordered_sim_result
 
 
 def save_graph(result):
