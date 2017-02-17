@@ -8,13 +8,14 @@ class TestMonteCarlo(unittest.TestCase):
     def test_get_totals(self):
         """Does the get_totals function sum values correctly?"""
         tasks = [
-            {"minimum": 1, "maximum": 2},
-            {"minimum": 3, "maximum": 4},
-            {"minimum": 5, "maximum": 6}
+            {"minimum": 1, "maximum": 2, "estimate": 3},
+            {"minimum": 4, "maximum": 5, "estimate": 6},
+            {"minimum": 7, "maximum": 8, "estimate": 9},
             ]
-        minimum, maximum = get_totals(tasks)
-        self.assertEqual(minimum, 9)
-        self.assertEqual(maximum, 12)
+        minimum, maximum, estimate = get_totals(tasks)
+        self.assertEqual(minimum, 12)
+        self.assertEqual(maximum, 15)
+        self.assertEqual(estimate, 18)
 
     def test_simulation_ordered(self):
         """Is the result of the simulation ordered?"""
