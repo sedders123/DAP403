@@ -13,15 +13,15 @@ class TestMonteCarlo(unittest.TestCase):
             {"minimum": 5, "maximum": 6}
             ]
         minimum, maximum = get_totals(tasks)
-        self.assertEquals(minimum, 9)
-        self.assertEquals(maximum, 12)
+        self.assertEqual(minimum, 9)
+        self.assertEqual(maximum, 12)
 
     def test_simulation_ordered(self):
         """Is the result of the simulation ordered?"""
         minimum, maximum = 1, 10
         result = run_simulation(minimum, maximum)
         for i, key in enumerate(result):
-            self.assertEquals(key, i + 1)
+            self.assertEqual(key, i + 1)
 
     def test_simulation_values_greater_than_previous(self):
         """ Do the results of each simulated step include results of previous steps?"""
