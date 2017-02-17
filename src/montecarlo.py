@@ -71,7 +71,7 @@ def save_graph(result, estimate):
     ax.xaxis.set_ticks_position('bottom')
 
     # Set up legend
-    estimateKey = Rectangle((0,0), 0.5, 0.5, color='y')
+    estimateKey = Rectangle((0, 0), 0.5, 0.5, color='y')
     ax.legend([estimateKey], ["Estimate"])
 
     x_values = list(result.keys())
@@ -94,7 +94,6 @@ def save_graph(result, estimate):
     plt.title('Monte Carlo Simulation')
     plt.xlabel('Percentage')
     plt.ylabel('Time')
-
 
     plt.savefig(os.path.join(OUTPUT_DIR, 'chart.png'))
 
