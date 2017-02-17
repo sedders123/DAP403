@@ -1,5 +1,5 @@
 import unittest
-from src.montecarlo import get_totals, run_simulation, SIMULATION_RUN_COUNT
+from src.montecarlo import get_totals, run_simulation, SIMULATION_RUN_COUNT, create_table
 
 
 class TestMonteCarlo(unittest.TestCase):
@@ -40,6 +40,12 @@ class TestMonteCarlo(unittest.TestCase):
         result = run_simulation(minimum, maximum)
         self.assertTrue(SIMULATION_RUN_COUNT in [value["number"] for value in result.values()])
 
+    def test_simulation_result_contains_correct_keys(self):
+        minimum, maximum = 1, 10
+        result = run_simulation(minimum, maximum)
+        for i in range(minimum, maximum + 1):
+            self.assertTrue(i in result)
+    
 
 if __name__ == '__main__':
     unittest.main()
