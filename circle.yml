@@ -5,4 +5,5 @@ machine:
 test:
   override:
     - flake8 src --ignore=E128,E501
+    - flake8 tests --ignore=E128,E501
     - nosetests tests/
