@@ -100,7 +100,7 @@ def save_graph(result, estimate):
 
 def create_table(result, estimate):
     '''
-    Saves a pretty printed table output of the results
+    Generates a pretty printed table output of the results
     '''
     table = PrettyTable()
     is_estimate = []
@@ -110,8 +110,6 @@ def create_table(result, estimate):
     table.add_column("Number of times (Out of {})".format(SIMULATION_RUN_COUNT), [sim_result["number"] for sim_result in result.values()])
     table.add_column("Percent of total (rounded)", [sim_result["percentage"] for sim_result in result.values()])
     table.add_column("Estimate", is_estimate)
-    with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
-        print(table, file=f)
     return table
 
 
@@ -122,4 +120,6 @@ if __name__ == '__main__':
     result = run_simulation(minimum, maximum)
     save_graph(result, estimate)
     table = create_table(result, estimate)
+    with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
+        print(table, file=f)
     print(table)
