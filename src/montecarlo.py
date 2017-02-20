@@ -9,7 +9,7 @@ from prettytable import PrettyTable
 from matplotlib.patches import Rectangle
 from collections import OrderedDict
 
-SIMULATION_RUN_COUNT = 500000
+SIMULATION_RUN_COUNT = 5000
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE_DIR = os.path.join(BASE_DIR, 'src')
@@ -45,7 +45,6 @@ def run_simulation(minimum, maximum):
     Runs the simulation and returns the result
     '''
     sim_result = {}
-
     for i in range(SIMULATION_RUN_COUNT):
         value = random.randint(minimum, maximum)
         for key in range(value, maximum + 1):
@@ -116,42 +115,42 @@ def create_table(result, estimate):
     return table
 
 
-def main(tasks, minimum, maximum):
-    start = time.time()
-    # tasks_file = os.path.join(DATA_DIR, 'tasks.json')
-    # tasks = load_json_file(tasks_file)
-    # minimum, maximum, estimate = get_totals(tasks)
-    start_simulation = time.time()
-    result = run_simulation(minimum, maximum)
-    end_simulation = time.time()
-    #start_save_graph = time.time()
-    #save_graph(result, estimate)
-    #end_save_graph = time.time()
-    #table = create_table(result, estimate)
-    #with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
-    #    print(table, file=f)
-    end = time.time()
-
-    total_time = end - start
-    #simulation_time = end_simulation - start_simulation
-    #graph_time = end_save_graph - start_save_graph
-    #return total_time, simulation_time, graph_time
-    return total_time
-
-if __name__ == '__main__':
-    runs_to_try=[1,5,10,50,100,500,1000,5000,10000,50000,100000,500000,1000000,5000000,10000000,50000000]
+def test_performance():
+    global SIMULATION_RUN_COUNT
+    ones = [int('1' + '0' * i) for i in range(5)]
+    fives = [int('5' + '0' * i) for i in range(5)]
+    runs_to_try = sorted(ones + fives)
     total_times = []
+
     tasks_file = os.path.join(DATA_DIR, 'tasks.json')
     tasks = load_json_file(tasks_file)
     minimum, maximum, estimate = get_totals(tasks)
+
     for i in runs_to_try:
         SIMULATION_RUN_COUNT = i
-        #total_time, simulation_time, graph_time = main()
-        total_time = main(tasks, minimum, maximum)
+        start_simulation = time.time()
+        run_simulation(minimum, maximum)
+        end_simulation = time.time()
+        total_time = end_simulation - start_simulation
         total_times.append(total_time)
+
+    # Create Graph
     plt.figure(2)
     plt.ylabel("Time(s)")
     plt.xlabel("Number of runs")
-    plt.title("Performance of Monte Carlo implemantation")
+    plt.title("Performance of Monte Carlo implementation")
     plt.plot(runs_to_try, total_times)
-    plt.savefig(os.path.join(OUTPUT_DIR, 'time.png'))
+    plt.savefig(os.path.join(OUTPUT_DIR, 'performance.png'))
+    plt.close()
+
+
+if __name__ == '__main__':
+    tasks_file = os.path.join(DATA_DIR, 'tasks.json')
+    tasks = load_json_file(tasks_file)
+    minimum, maximum, estimate = get_totals(tasks)
+    result = run_simulation(minimum, maximum)
+    save_graph(result, estimate)
+    table = create_table(result, estimate)
+    with open(os.path.join(OUTPUT_DIR, 'table.txt'), 'w') as f:
+        print(table, file=f)
+    print(table)
