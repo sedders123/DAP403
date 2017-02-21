@@ -2,13 +2,14 @@ import random
 import json
 import os
 import math
+import time
 import matplotlib.pyplot as plt
 
 from prettytable import PrettyTable
 from matplotlib.patches import Rectangle
 from collections import OrderedDict
 
-SIMULATION_RUN_COUNT = 500
+SIMULATION_RUN_COUNT = 5000
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOURCE_DIR = os.path.join(BASE_DIR, 'src')
@@ -44,7 +45,6 @@ def run_simulation(minimum, maximum):
     Runs the simulation and returns the result
     '''
     sim_result = {}
-
     for i in range(SIMULATION_RUN_COUNT):
         value = random.randint(minimum, maximum)
         for key in range(value, maximum + 1):
@@ -63,6 +63,7 @@ def save_graph(result, estimate):
     '''
     Plots and then saves graph of results
     '''
+    plt.figure(1)
     plt.style.use('classic')
     fig, ax = plt.subplots()
     ax.spines['top'].set_visible(False)
@@ -96,6 +97,7 @@ def save_graph(result, estimate):
     plt.ylabel('Time')
 
     plt.savefig(os.path.join(OUTPUT_DIR, 'chart.png'))
+    plt.close()
 
 
 def create_table(result, estimate):
@@ -111,6 +113,39 @@ def create_table(result, estimate):
     table.add_column("Percent of total (rounded)", [sim_result["percentage"] for sim_result in result.values()])
     table.add_column("Estimate", is_estimate)
     return table
+
+
+def test_performance():
+    '''
+    Runs the simulation multiple times with a different number of runs before
+    plotting the performace of each run.
+    '''
+    global SIMULATION_RUN_COUNT
+    ones = [int('1' + '0' * i) for i in range(5)]
+    fives = [int('5' + '0' * i) for i in range(5)]
+    runs_to_try = sorted(ones + fives)
+    total_times = []
+
+    tasks_file = os.path.join(DATA_DIR, 'tasks.json')
+    tasks = load_json_file(tasks_file)
+    minimum, maximum, estimate = get_totals(tasks)
+
+    for i in runs_to_try:
+        SIMULATION_RUN_COUNT = i
+        start_simulation = time.time()
+        run_simulation(minimum, maximum)
+        end_simulation = time.time()
+        total_time = end_simulation - start_simulation
+        total_times.append(total_time)
+
+    # Create Graph
+    plt.figure(2)
+    plt.ylabel("Time(s)")
+    plt.xlabel("Number of runs")
+    plt.title("Performance of Monte Carlo implementation")
+    plt.plot(runs_to_try, total_times)
+    plt.savefig(os.path.join(OUTPUT_DIR, 'performance.png'))
+    plt.close()
 
 
 if __name__ == '__main__':
