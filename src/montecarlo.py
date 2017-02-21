@@ -19,7 +19,13 @@ OUTPUT_DIR = os.path.join(BASE_DIR, 'output')
 
 def load_json_file(file_path):
     '''
-    Returns data from a specified JSON file
+    Loads data from a specified JSON file
+
+    Args:
+        file_path(str): A full path pointing to a JSON file
+
+    Returns:
+        tasks(list[dict]): A list of dictionaries imported from the JSON file
     '''
     with open(file_path) as data_file:
         tasks = json.load(data_file)
@@ -28,7 +34,14 @@ def load_json_file(file_path):
 
 def get_totals(tasks):
     '''
-    Returns the sum of all the tasks minimum and maximum times
+    Returns the sum of all tasks' minimum and maximum times
+
+    Args:
+        tasks(list[dict]): A list of 'tasks'
+
+    Returns:
+        tuple(int,int,int): A tuple containing the minimum, maximum and estimated times for the project's completion
+
     '''
     maximum = 0
     minimum = 0
@@ -43,6 +56,13 @@ def get_totals(tasks):
 def run_simulation(minimum, maximum):
     '''
     Runs the simulation and returns the result
+
+    Args:
+        minimum(int): The minimum amount of time the project will take to be completed
+        maximum(int): The maximum amount of time the project will take to be completed
+
+    Returns:
+        `collections.OrderedDict`: An orderd dictionary containing the results of the simulation
     '''
     sim_result = {}
     for i in range(SIMULATION_RUN_COUNT):
@@ -62,6 +82,10 @@ def run_simulation(minimum, maximum):
 def save_graph(result, estimate):
     '''
     Plots and then saves graph of results
+
+    Args:
+        result(collections.OrderedDict): The result of the simulation
+        estimate(int): The estimated time for the prject to be completed
     '''
     plt.figure(1)
     plt.style.use('classic')
@@ -103,6 +127,13 @@ def save_graph(result, estimate):
 def create_table(result, estimate):
     '''
     Generates a pretty printed table output of the results
+
+    Args:
+        result(collections.OrderedDict): The result of the simulation
+        estimate(int): The estimated time for the prject to be completed
+
+    Returns:
+        `prettytable.PrettyTable`: An ASCII table displaying the simulations results
     '''
     table = PrettyTable()
     is_estimate = []
