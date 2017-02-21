@@ -116,6 +116,10 @@ def create_table(result, estimate):
 
 
 def test_performance():
+    '''
+    Runs the simulation multiple times with a different number of runs before
+    plotting the performace of each run.
+    '''
     global SIMULATION_RUN_COUNT
     ones = [int('1' + '0' * i) for i in range(5)]
     fives = [int('5' + '0' * i) for i in range(5)]
